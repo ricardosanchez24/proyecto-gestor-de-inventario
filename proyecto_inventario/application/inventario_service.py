@@ -1,4 +1,4 @@
-from proyecto_inventario.domain.models import Producto
+from domain.models import Producto
 
 
 class InventarioService:
@@ -9,6 +9,9 @@ class InventarioService:
         nuevo_producto = Producto(nombre_producto, stock, precio, descripcion)
         nuevo_producto.validar_producto()
         self.repositorio_productos.guardar_producto(nuevo_producto)
+    
+    def obtener_todos(self):
+        return self.repositorio_productos.obtener_todos()
 
     def obtener_producto(self, id_producto):
         return self.repositorio_productos.obtener_producto_por_id(id_producto)

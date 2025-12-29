@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Inventario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📦 Inventario de Productos</h1>
+
+    <div class="card p-4 mb-4 shadow-sm">
+        <h4>Nuevo Producto</h4>
+        <form id="productoForm">
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <input type="text" id="nombre" class="form-control" placeholder="Nombre del producto" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <input type="number" id="stock" class="form-control" placeholder="Stock" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" required>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <input type="text" id="descripcion" class="form-control" placeholder="Descripción">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Agregar Producto</button>
+        </form>
+    </div>
+
+    <div class="card p-4 shadow-sm">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaProductos">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const API_URL = '/productos';
+
+    // Función para cargar productos (GET)
+    async function cargarProductos() {
+        const respuesta = await fetch(API_URL); // Petición GET como en Postman
+        const productos = await respuesta.json();
+        
+        const tabla = document.getElementById('tablaProductos');
+        tabla.innerHTML = ''; // Limpiar tabla
+
+        productos.forEach(prod => {
+            tabla.innerHTML += `
+                <tr>
+                    <td>${prod.id_producto}</td>
+                    <td>${prod.nombre_producto}</td>
+                    <td>${prod.descripcion}</td>
+                    <td>$${prod.precio}</td>
+                    <td>${prod.stock}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${prod.id_producto})">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // Función para crear producto (POST)
+    document.getElementById('productoForm').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Evitar que se recargue la página
+        
+        const nuevoProducto = {
+            nombre_producto: document.getElementById('nombre').value,
+            stock: parseInt(document.getElementById('stock').value),
+            precio: parseFloat(document.getElementById('precio').value),
+            descripcion: document.getElementById('descripcion').value
+        };
+
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevoProducto)
+        });
+
+        document.getElementById('productoForm').reset(); // Limpiar formulario
+        cargarProductos(); // Recargar la tabla
+    });
+
+    // Función para eliminar (DELETE)
+    async function eliminarProducto(id) {
+        if(confirm('¿Seguro que deseas eliminar este producto?')) {
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            cargarProductos();
+        }
+    }
+
+    // Cargar productos al iniciar la página
+    cargarProductos();
+</script>
+
+</body>
+</html>
