@@ -1,10 +1,13 @@
-class Producto:
-    def __init__ (self, nombre_producto, stock, precio, descripcion, id_producto=None):
-        self.nombre_producto = nombre_producto
-        self.stock = stock
-        self.precio = precio
-        self.descripcion = descripcion
-        self.id_producto = id_producto
+from database_config import Base
+from sqlalchemy import String, INTEGER, Column,DECIMAL
+
+class Producto(Base):
+    __tablename__ = "productos"
+    id_producto = Column(INTEGER, nullable=False, primary_key=True,autoincrement=True)
+    nombre_producto = Column(String(55), nullable=False)
+    stock = Column(INTEGER, nullable=False)
+    precio = Column(DECIMAL(10,2), nullable=False)
+    descripcion = Column(String(250))
 
     def validar_producto(self):
         if not self.nombre_producto:
