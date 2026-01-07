@@ -4,7 +4,6 @@ class ProductoRepository:
     def __init__ (self,session):
         self.session = session
         
-
     def guardar_producto(self, producto):
         self.session.add(producto)
         self.session.commit()

@@ -5,7 +5,6 @@ from application.inventario_service import InventarioService
 
 app = Flask(__name__)
 
-
 # --- RUTA PARA EL FRONTEND ---
 @app.route('/') # <--- NUEVO
 def home():
