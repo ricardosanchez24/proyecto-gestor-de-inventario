@@ -38,3 +38,11 @@ class Producto(Base):
     
     def __str__(self):
         return f"Producto(id: {self.id_producto}, nombre: {self.nombre_producto}, stock: {self.stock}, precio: {self.precio}, descripcion: {self.descripcion})"
+    
+
+class Usuario(Base):
+    __tablename__ ="Usuarios"
+    id_usuario = Column(INTEGER, nullable=False,primary_key=True,autoincrement=True,unique=True)   
+    email = Column(String(250),nullable=False,unique=True)
+    password = Column(String(300),nullable=False)
+    rol = Column(String(75))
