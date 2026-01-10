@@ -32,4 +32,20 @@ class InventarioService:
         self.repositorio_productos.actualizar_producto(producto_actualizado)
 
     def eliminar_producto(self, id_producto):
-        self.repositorio_productos.eliminar_producto(id_producto)            
+        self.repositorio_productos.eliminar_producto(id_producto)  
+
+    def modificar_stock(self, id_producto, cantidad):
+        # 1. Buscar el producto
+        producto = self.repositorio_productos.obtener_producto_por_id(id_producto)
+        if not producto:
+            raise ValueError("Producto no encontrado")
+
+        # 2. Modificar el stock usando la lógica del Dominio
+        if cantidad > 0:
+            producto.agg_stock(cantidad)
+        elif cantidad < 0:
+            # Enviamos el valor positivo a reducir_stock (ej: -1 se convierte en 1)
+            producto.reducir_stock(abs(cantidad))
+        
+        # 3. Guardar cambios
+        self.repositorio_productos.actualizar_producto(producto)              

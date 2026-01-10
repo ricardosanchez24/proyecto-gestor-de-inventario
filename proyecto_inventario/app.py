@@ -38,6 +38,15 @@ def token_requerido(f):
 def home():
     return render_template('index.html') # Busca el archivo en la carpeta /templates
 
+# Rutas para mostrar las VISTAS (Páginas HTML)
+@app.route('/ingresar') #login
+def view_login():
+    return render_template('login.html')
+
+@app.route('/registrarse') # registro
+def view_registro():
+    return render_template('registro.html')
+
 @app.route("/registro", methods = ['GET','POST'])
 def registrar_usuario():
 	session = SessionLocal()
@@ -174,6 +183,26 @@ def eliminar_producto(id_producto):
 		return jsonify({'error': str(e)}), 400
 	finally:
 		session.close()
+
+@app.route('/productos/<int:id_producto>/stock', methods=['PATCH'])
+@token_requerido
+def actualizar_stock(id_producto):
+    session = SessionLocal()
+    repo = ProductoRepository(session)
+    servicio = InventarioService(repo)
+    
+    try:
+        data = request.get_json()
+        cantidad = int(data.get('cantidad', 0)) # Puede ser 1 o -1
+        
+        servicio.modificar_stock(id_producto, cantidad)
+        return jsonify({'message': 'Stock actualizado'}), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        session.close()		
 
 
 if __name__ == '__main__':
