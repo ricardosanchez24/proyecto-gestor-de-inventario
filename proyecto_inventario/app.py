@@ -127,7 +127,7 @@ def crear_producto():
 		stock = int(data.get('stock', 0))
 		precio = float(data.get('precio', 0))
 		descripcion = data.get('descripcion', '')
-		servicio.agregar_producto(nombre, stock, precio, descripcion)
+		servicio.agregar_producto(nombre_producto, stock, precio, descripcion)
 		return jsonify({'message': 'Producto creado correctamente.'}), 201
 	except Exception as e:
 		return jsonify({'error': str(e)}), 400
