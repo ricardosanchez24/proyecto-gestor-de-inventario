@@ -1,7 +1,7 @@
 from domain.models import Usuario
 from werkzeug.security import check_password_hash, generate_password_hash
 import jwt
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime,timezone
 
 class AutenticacionServices:
     def __init__(self,usuarios_repository):
@@ -34,8 +34,7 @@ class AutenticacionServices:
         payload = {
             'user_id': usuario.id_usuario,
             'rol': usuario.rol,
-            'now': datetime.utcnow,
-            'exp': datetime.utcnow() + timedelta(days=1)
+            'exp': datetime.now(timezone.utc) + timedelta(days=1)
         }
         #creamos el token con la info del usuario,nuestra llave secreta y escogiendo el algoritmo de encriptacion
         token = jwt.encode(payload,secret_key,algorithm='HS256')
