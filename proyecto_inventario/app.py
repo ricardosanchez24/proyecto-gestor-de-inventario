@@ -10,7 +10,7 @@ import os
 
 app = Flask(__name__)
 # CONFIGURAR LA CLAVE SECRETA	            CLAVE             CLAVE TEMPORAL POR SI NO SE ENCUENTRA LA CLAVE
-app.config['CLAVE SECRETA'] = os.environ.get('CLAVE SECRETA','CLAVE-TEMPORAL')
+app.config['SECRET KEY'] = os.environ.get('CLAVE SECRETA','CLAVE-TEMPORAL')
 # forzando la creacion de tablas
 with app.app_context():
 	print("Intentando crear tablas en tiDB...")
@@ -19,7 +19,7 @@ with app.app_context():
 		print("Tablas creadas exitosamente")
 	except Exception as e:
 		print(f"Error al crear las tablas {e}")
-		
+
 #creacion de token personalizado
 def token_requerido(f):
 	@wraps(f)
@@ -32,7 +32,7 @@ def token_requerido(f):
 			return jsonify({'menssage': 'token no encontrado'}),400
 
 		try:
-			data = jwt.decode(token, app.config['CLAVE SECRETA'],algorithms=['HS256'])
+			data = jwt.decode(token, app.config['SECRET KEY'],algorithms=['HS256'])
 		except jwt.ExpiredSignatureError:
 			return jsonify({'menssage': 'el token a expirado'}), 401
 		except jwt.InvalidTokenError:
