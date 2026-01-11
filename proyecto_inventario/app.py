@@ -208,9 +208,13 @@ def actualizar_stock(id_producto):
 
 if __name__ == '__main__':
 	app.run(debug=True)
-	print("Creando tablas en la base de datos...")
-	Base.metadata.create_all(bind=engine)
+	with app.app_context():
+        print("Intentando crear tablas en TiDB Cloud...")
+        try:
+            Base.metadata.create_all(bind=engine)
+            print("Tablas creadas exitosamente.")
+        except Exception as e:
+            print(f"Error al crear tablas: {e}")
 
-	import os
-	port = int(os.environ.get("PORT", 5000))
-	app.run(host='0.0.0.0', port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
