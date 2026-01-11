@@ -95,7 +95,10 @@ def login():
 		password = data['password']
 		secret_key = app.config['SECRET_KEY']
 		token = servicio.login(email,password,secret_key)
-		return jsonify({'token': token}), 200
+		if token:
+			return jsonify({'token': token}), 200
+		else:
+			return jsonify({'Error': 'Credenciales inválidas (correo o contraseña incorrectos)'}), 401
 	except Exception as e:
 		return jsonify({'Error': str(e)}), 400
 	finally:
