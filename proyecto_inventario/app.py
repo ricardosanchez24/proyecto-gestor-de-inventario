@@ -32,7 +32,7 @@ def token_requerido(f):
 			return jsonify({'menssage': 'token no encontrado'}),400
 
 		try:
-			data = jwt.decode(token, app.config['SECRET KEY'],algorithms=['HS256'])
+			data = jwt.decode(token, app.config['SECRET_KEY'],algorithms=['HS256'])
 		except jwt.ExpiredSignatureError:
 			return jsonify({'menssage': 'el token a expirado'}), 401
 		except jwt.InvalidTokenError:
