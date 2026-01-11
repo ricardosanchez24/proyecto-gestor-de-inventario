@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template
-from database_config import SessionLocal
+from database_config import SessionLocal,Base,engine
 from infrastructure.productos_repository import ProductoRepository
 from application.inventario_service import InventarioService
 from infrastructure.usuarios_repository import UsuarioRepository
@@ -208,6 +208,9 @@ def actualizar_stock(id_producto):
 
 if __name__ == '__main__':
 	app.run(debug=True)
+	print("Creando tablas en la base de datos...")
+	Base.metadata.create_all(bind=engine)
+
 	import os
 	port = int(os.environ.get("PORT", 5000))
 	app.run(host='0.0.0.0', port=port)
