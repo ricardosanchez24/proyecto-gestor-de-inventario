@@ -10,7 +10,7 @@ import os
 
 app = Flask(__name__)
 # CONFIGURAR LA CLAVE SECRETA	            CLAVE             CLAVE TEMPORAL POR SI NO SE ENCUENTRA LA CLAVE
-app.config['CLAVE SECRETA'] = os.enviro.get('CLAVE SECRETA','CLAVE-TEMPORAL')
+app.config['CLAVE SECRETA'] = os.environ.get('CLAVE SECRETA','CLAVE-TEMPORAL')
 
 #creacion de token personalizado
 def token_requerido(f):
