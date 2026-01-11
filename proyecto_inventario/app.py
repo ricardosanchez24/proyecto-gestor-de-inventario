@@ -14,9 +14,11 @@ from datetime import timedelta
 
 app = Flask(__name__)
 
+
+
 # SOLUCIÓN: Si no encuentra la variable en Render, usa una frase fija de respaldo
 # ¡No dejes esto vacío ni uses 'CLAVE_SECRETA' como valor!
-app.config['SECRET_KEY'] = os.environ.get('CLAVE_SECRETA', 'una_frase_muy_larga_y_fija_12345')
+app.config['SECRET_KEY'] = os.environ.get('SANCHEZ', 'una_frase_muy_larga_y_fija_12345')
 
 # OPCIONAL: Extiende el tiempo de la sesión para que no expire rápido
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
