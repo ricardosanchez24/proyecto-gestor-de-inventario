@@ -11,7 +11,15 @@ import os
 app = Flask(__name__)
 # CONFIGURAR LA CLAVE SECRETA	            CLAVE             CLAVE TEMPORAL POR SI NO SE ENCUENTRA LA CLAVE
 app.config['CLAVE SECRETA'] = os.environ.get('CLAVE SECRETA','CLAVE-TEMPORAL')
-
+# forzando la creacion de tablas
+with app.app_context():
+	print("Intentando crear tablas en tiDB...")
+	try:
+		Base.metadata.create_all(bind=engine)
+		print("Tablas creadas exitosamente")
+	except Exception as e:
+		print(f"Error al crear las tablas {e}")
+		
 #creacion de token personalizado
 def token_requerido(f):
 	@wraps(f)
@@ -207,14 +215,7 @@ def actualizar_stock(id_producto):
 
 
 if __name__ == '__main__':
-	# forzando la creacion de tablas
-	with app.app_context():
-		print("Intentando crear tablas en tiDB...")
-		try:
-			Base.metadata.create_all(bind=engine)
-			print("Tablas creadas exitosamente")
-		except Exception as e:
-			print(f"Error al crear las tablas {e}")
+	
 
 	port = int(os.environ.get("PORT", 10000))
 	app.run(host='0.0.0.0', port=port)			
