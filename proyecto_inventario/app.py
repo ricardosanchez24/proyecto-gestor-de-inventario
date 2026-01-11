@@ -7,11 +7,7 @@ from application.autenticacion_service import AutenticacionServices
 import jwt # para decodificar el token guardian
 from functools import wraps # para crear el decorador
 import os
-
-app = Flask(__name__)
-import os
 from datetime import timedelta
-
 app = Flask(__name__)
 
 # SOLUCIÓN: Si no encuentra la variable en Render, usa una frase fija de respaldo
