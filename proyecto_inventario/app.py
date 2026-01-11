@@ -14,15 +14,20 @@ from datetime import timedelta
 
 app = Flask(__name__)
 
+# Busca esta línea en tu app.py y cámbiala por una frase larga y fija
+app.config['SECRET_KEY'] = 'frase_super_secreta_que_no_cambia_nunca_12345'
+app.config['JWT_SECRET_KEY'] = 'frase_super_secreta_que_no_cambia_nunca_12345'
 
-
+# Configura las cookies para que duren más tiempo
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False # El token no expirará mientras el navegador esté abierto
+'''
 # SOLUCIÓN: Si no encuentra la variable en Render, usa una frase fija de respaldo
 # ¡No dejes esto vacío ni uses 'CLAVE_SECRETA' como valor!
 app.config['SECRET_KEY'] = os.environ.get('SANCHEZ', 'una_frase_muy_larga_y_fija_12345')
 
 # OPCIONAL: Extiende el tiempo de la sesión para que no expire rápido
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
-
+'''
 # forzando la creacion de tablas
 with app.app_context():
 	print("Intentando crear tablas en tiDB...")
