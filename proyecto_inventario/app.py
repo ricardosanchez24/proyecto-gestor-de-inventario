@@ -5,7 +5,8 @@ from application.inventario_service import InventarioService
 from infrastructure.usuarios_repository import UsuarioRepository
 from application.autenticacion_service import AutenticacionServices
 import jwt # para decodificar el token guardian
-from functools import wraps # paara crear el decorador
+from functools import wraps # para crear el decorador
+import os
 
 app = Flask(__name__)
 # CONFIGURAR LA CLAVE SECRETA	            CLAVE             CLAVE TEMPORAL POR SI NO SE ENCUENTRA LA CLAVE
