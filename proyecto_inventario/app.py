@@ -8,8 +8,8 @@ import jwt # para decodificar el token guardian
 from functools import wraps # paara crear el decorador
 
 app = Flask(__name__)
-# CONFIGURAR LA CLAVE SECRETA	
-app.config['CLAVE SECRETA'] = 'CLAVE SECRETA'
+# CONFIGURAR LA CLAVE SECRETA	            CLAVE             CLAVE TEMPORAL POR SI NO SE ENCUENTRA LA CLAVE
+app.config['CLAVE SECRETA'] = os.enviro.get('CLAVE SECRETA','CLAVE-TEMPORAL')
 
 #creacion de token personalizado
 def token_requerido(f):
