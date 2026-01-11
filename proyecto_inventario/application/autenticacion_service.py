@@ -38,6 +38,6 @@ class AutenticacionServices:
             'exp': datetime.utcnow() + timedelta(days=1)
         }
         #creamos el token con la info del usuario,nuestra llave secreta y escogiendo el algoritmo de encriptacion
-        token = jwt.encode(payload,'SECRET_KEY',algorithm='HS256')
+        token = jwt.encode(payload,'CLAVE-TEMPORAL',algorithm='HS256')
         #retornamos el token
         return token         
