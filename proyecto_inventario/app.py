@@ -9,8 +9,18 @@ from functools import wraps # para crear el decorador
 import os
 
 app = Flask(__name__)
-# CONFIGURAR LA CLAVE SECRETA	            CLAVE             CLAVE TEMPORAL POR SI NO SE ENCUENTRA LA CLAVE
-app.config['SECRET_KEY'] = os.environ.get('CLAVE_SECRETA','CLAVE-TEMPORAL')
+import os
+from datetime import timedelta
+
+app = Flask(__name__)
+
+# SOLUCIÓN: Si no encuentra la variable en Render, usa una frase fija de respaldo
+# ¡No dejes esto vacío ni uses 'CLAVE_SECRETA' como valor!
+app.config['SECRET_KEY'] = os.environ.get('CLAVE_SECRETA', 'una_frase_muy_larga_y_fija_12345')
+
+# OPCIONAL: Extiende el tiempo de la sesión para que no expire rápido
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
+
 # forzando la creacion de tablas
 with app.app_context():
 	print("Intentando crear tablas en tiDB...")
