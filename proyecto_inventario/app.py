@@ -123,7 +123,7 @@ def crear_producto():
 	servicio = InventarioService(repo)
 	try:
 		data = request.get_json()
-		nombre = data.get('nombre_producto')
+		nombre_producto = data.get('nombre_producto')
 		stock = int(data.get('stock', 0))
 		precio = float(data.get('precio', 0))
 		descripcion = data.get('descripcion', '')
