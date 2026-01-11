@@ -10,7 +10,7 @@ import os
 
 app = Flask(__name__)
 # CONFIGURAR LA CLAVE SECRETA	            CLAVE             CLAVE TEMPORAL POR SI NO SE ENCUENTRA LA CLAVE
-app.config['SECRET_KEY'] = os.environ.get('CLAVE SECRETA','CLAVE-TEMPORAL')
+app.config['SECRET_KEY'] = os.environ.get('CLAVE_SECRETA','CLAVE-TEMPORAL')
 # forzando la creacion de tablas
 with app.app_context():
 	print("Intentando crear tablas en tiDB...")
