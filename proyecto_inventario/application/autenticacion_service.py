@@ -23,7 +23,7 @@ class AutenticacionServices:
         self.usuarios_repository.guardar_usuario(nuevo_usuario)
 
 
-    def login(self,email,password):
+    def login(self,email,password,secret_key):
         #buscar y validar usuario
         usuario = self.usuarios_repository.buscar_usuario_email(email)
         if not usuario:
@@ -34,10 +34,10 @@ class AutenticacionServices:
         payload = {
             'user_id': usuario.id_usuario,
             'rol': usuario.rol,
-            'now': datetime.utcnow(),
+            'now': datetime.utcnow,
             'exp': datetime.utcnow() + timedelta(days=1)
         }
         #creamos el token con la info del usuario,nuestra llave secreta y escogiendo el algoritmo de encriptacion
-        token = jwt.encode(payload,'SECRET_KEY',algorithm='HS256')
+        token = jwt.encode(payload,secret_key,algorithm='HS256')
         #retornamos el token
         return token         

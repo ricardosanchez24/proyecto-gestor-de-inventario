@@ -90,7 +90,8 @@ def login():
 		data = request.get_json()
 		email = data['email']
 		password = data['password']
-		token = servicio.login(email,password)
+		secret_key = app.config['SECRET_KEY']
+		token = servicio.login(email,password,secret_key)
 		return jsonify({'token': token}), 200
 	except Exception as e:
 		return jsonify({'Error': str(e)}), 400
