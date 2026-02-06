@@ -57,7 +57,38 @@
     </div>
 </div>
 
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<div id="reader" style="width: 100%; max-width: 500px;"></div>
+
+<p>Resultado: <span id="result" style="font-weight: bold; color: green;">Esperando código...</span></p>
+
 <script>
+
+    function onScanSuccess(decodedText, decodedResult) {
+    // Lo que sucede cuando se detecta un código
+    document.getElementById('result').innerText = decodedText;
+    console.log(`Código escaneado: ${decodedText}`, decodedResult);
+    
+    // Opcional: Detener el escáner tras el primer éxito
+    // html5QrcodeScanner.clear();
+}
+
+    function onScanFailure(error) {
+    // Errores de lectura (suceden constantemente mientras busca, se pueden ignorar)
+}
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", 
+    { 
+        fps: 10,       // Velocidad de escaneo (cuadros por segundo)
+        qrbox: { width: 250, height: 150 } // Área de enfoque (ajustada para barras y QR)
+    }, 
+    /* verbose= */ false
+);
+
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
     const API_URL = '/productos';
     const token = localStorage.getItem('token');
 
