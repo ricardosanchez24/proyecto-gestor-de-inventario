@@ -183,7 +183,8 @@ def actualizar_producto(id_producto):
 		stock = int(data.get('stock', 0))
 		precio = float(data.get('precio', 0))
 		descripcion = data.get('descripcion', '')
-		servicio.actualizar_producto(id_producto, nombre, stock, precio, descripcion)
+		codigo_barras = data.get('codigo_barras')
+		servicio.actualizar_producto(id_producto, nombre, stock, precio, descripcion,codigo_barras)
 		return jsonify({'message': 'Producto actualizado correctamente.'})
 	except Exception as e:
 		return jsonify({'error': str(e)}), 400
@@ -226,6 +227,34 @@ def actualizar_stock(id_producto):
     finally:
         session.close()		
 
+@app.route('/productos/buscar',methods= ['POST'])
+@token_requerido
+def buscar_producto_codigo_barras():
+	session = SessionLocal()
+	repo = ProductoRepository(session)
+	servicio = InventarioService(repo)
+
+	try:
+		data = request.get_json
+		codigo = data.get('codigo_barras')
+
+		producto = servicio.obtener_producto_codigo_barras(codigo)
+
+		if producto:
+			return jsonify({
+                'id_producto': producto.id_producto,
+                'nombre_producto': producto.nombre_producto,
+                'precio': float(producto.precio),
+                'stock': producto.stock,
+                'codigo_barras': producto.codigo_barras
+            }), 200
+		else:
+			return jsonify({'mensaje':'producto no encontrado'}), 404
+	except Exception as e:
+		print(e)	
+	finally:
+		session.close()	
+    
 
 if __name__ == '__main__':
 	

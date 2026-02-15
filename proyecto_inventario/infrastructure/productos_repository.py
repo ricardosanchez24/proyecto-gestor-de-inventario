@@ -15,6 +15,9 @@ class ProductoRepository:
     def obtener_producto_por_id(self, id_producto):
         return self.session.query(Producto).filter(Producto.id_producto == id_producto).first()
     
+    def obtener_producto_codigo_barras(self,codigo_barras):
+        return self.session.query(Producto).filter(Producto.codigo_barras == codigo_barras).first()
+    
     def actualizar_producto(self, producto):
         self.session.merge(producto)
         self.session.commit()

@@ -20,14 +20,18 @@ class InventarioService:
 
     def obtener_producto(self, id_producto):
         return self.repositorio_productos.obtener_producto_por_id(id_producto)
+    
+    def obtener_producto_codigo_barras(self,codigo_barras):
+        return self.repositorio_productos.obtener_producto_codigo_barras(codigo_barras)
 
-    def actualizar_producto(self, id_producto, nombre_producto, stock, precio, descripcion):
+    def actualizar_producto(self, id_producto, nombre_producto, stock, precio, descripcion,codigo_barras):
         producto_actualizado = Producto(
             id_producto=id_producto, # Importante pasar el ID aquí
             nombre_producto=nombre_producto,
             stock=stock,
             precio=precio,
-            descripcion=descripcion
+            descripcion=descripcion,
+            codigo_barras=codigo_barras
         )
         self.repositorio_productos.actualizar_producto(producto_actualizado)
 

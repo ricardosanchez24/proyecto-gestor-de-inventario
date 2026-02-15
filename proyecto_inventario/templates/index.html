@@ -19,6 +19,14 @@
 <div class="container">
     <h2 class="text-center mb-4">Panel de Control</h2>
 
+    <!--Trayendo la libreria del escaner mediante un enlace-->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <!--se crea un div en dodne se va aejecutar el lector y un id para usarlo en js-->
+    <div id="render"></div>
+    <!--boton creado para cuando se le de click se abra el lector-->
+    <button class="btn btn-primary w-100" id="boton">escaner</button>
+
     <div class="card p-4 mb-4 shadow-sm">
         <h4>Nuevo Producto</h4>
         <form id="productoForm">
@@ -30,10 +38,13 @@
                     <input type="number" id="stock" class="form-control" placeholder="Stock" required>
                 </div>
                 <div class="col-md-2 mb-2">
-                    <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" required>
+                    <input type="number" id="precio" class="form-control" placeholder="Precio (REF: USD)" step="0.01" required>
                 </div>
                 <div class="col-md-4 mb-2">
                     <input type="text" id="descripcion" class="form-control" placeholder="Descripción">
+                </div>
+                <div class="col-md-4 mb-2">
+                    <input type="text" id="descripcion" class="form-control" placeholder="Codigo de Barras">
                 </div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Agregar Producto</button>
@@ -48,6 +59,7 @@
                     <th>Producto</th>
                     <th>Descripción</th>
                     <th>Precio</th>
+                    <th>Codigo Barras</th>
                     <th class="text-center">Stock</th> <th>Acciones</th>
                 </tr>
             </thead>
@@ -57,34 +69,47 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-<div id="render"></div>
-<button class="btn btn-primary w-100" id="boton">escaner</button>
 
 <script>
-
+    //se crea un obj de la libreria apuntando al div donde se ejecutara el lector
     const Qr = new Html5Qrcode("render");
-
+    //se configura el lector sus fps y el tamaño del cuadro
     const config = {
         'fps': 15,
         'qrbox': {'width':200,'height':150}
     }
-
+    //se captura el boton en una variable para darle eventos y que se disparen
     boton = document.getElementById("boton")
     boton.addEventListener("click", async () => { console.log("iniciando scaner...");
     
     try
-    { 
+    {   //el metodo "start" hace que corra el lector sus metodos son: obj.start(camara(delantera/trasera),configuracion lector,accion a ejecutar);
         await Qr.start(
             {facingMode: 'environment'},
             config,
-            async (code) => {console.log(code)},
+            async (code) => {const respuesta = await fetch("/productos/buscar",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "code-barras" : code
+                }) 
+            })
+        
+            //al final de todo cuando se ejecute el codigo dentro del start usamos el stop metodo para cerrar el lector
             await Qr.stop()
+
+            if (respuesta.ok){
+                const data = await respuesta.json();
+                console.log(data)
+            }
+
+            }    
         );
         
     }    
-    catch (NotAllowedError) {console.log("no se dieron los permisos necesarios");}
+    catch (Error) {console.error("Error:",Error);}
     })
 
 
@@ -127,6 +152,7 @@
                     <td>${prod.descripcion}</td>
                     <td>$${prod.precio}</td>
                     
+                    
                     <td class="text-center">
                         <div class="btn-group" role="group">
                             <button class="btn btn-outline-danger btn-sm" onclick="cambiarStock(${prod.id_producto}, -1)">
@@ -140,6 +166,8 @@
                             </button>
                         </div>
                     </td>
+                    
+                    
 
                     <td>
                         <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${prod.id_producto})">

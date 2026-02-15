@@ -8,6 +8,7 @@ class Producto(Base):
     stock = Column(INTEGER, nullable=False)
     precio = Column(DECIMAL(10,2), nullable=False)
     descripcion = Column(String(250))
+    codigo_barras = Column(String(100), unique=True, nullable=False)
 
     def validar_producto(self):
         if not self.nombre_producto:
@@ -16,6 +17,8 @@ class Producto(Base):
             raise ValueError("El stock no puede ser negativo.")
         if self.precio < 0:
             raise ValueError("El precio no puede ser negativo.")
+        if not self.codigo_barras:
+            raise ValueError("EL producto debe tener un codigo de barras")
         return True    
     
     def agg_stock(self, cantidad):
@@ -37,7 +40,7 @@ class Producto(Base):
         return self.precio
     
     def __str__(self):
-        return f"Producto(id: {self.id_producto}, nombre: {self.nombre_producto}, stock: {self.stock}, precio: {self.precio}, descripcion: {self.descripcion})"
+        return f"Producto(id: {self.id_producto}, nombre: {self.nombre_producto}, stock: {self.stock}, precio: {self.precio}, descripcion: {self.descripcion}), codigo de barras: {self.codigo_barras}"
     
 
 class Usuario(Base):
