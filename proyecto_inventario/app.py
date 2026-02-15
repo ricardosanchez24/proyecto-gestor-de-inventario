@@ -122,7 +122,8 @@ def listar_productos():
 					'nombre_producto': p.nombre_producto,
 					'stock': p.stock,
 					'precio': float(p.precio), # Importante convertir Decimal a float
-					'descripcion': p.descripcion
+					'descripcion': p.descripcion,
+					'codigo_barras': p.codigo_barras
 				})
 		return jsonify(lista_final)
 	finally:
@@ -140,7 +141,8 @@ def crear_producto():
 		stock = int(data.get('stock', 0))
 		precio = float(data.get('precio', 0))
 		descripcion = data.get('descripcion', '')
-		servicio.agregar_producto(nombre_producto, stock, precio, descripcion)
+		codigo_barras = data.get('codigo_barras')
+		servicio.agregar_producto(nombre_producto, stock, precio, descripcion,codigo_barras)
 		return jsonify({'message': 'Producto creado correctamente.'}), 201
 	except Exception as e:
 		return jsonify({'error': str(e)}), 400

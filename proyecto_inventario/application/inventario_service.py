@@ -5,12 +5,13 @@ class InventarioService:
     def __init__(self, repositorio_productos):
         self.repositorio_productos = repositorio_productos
 
-    def agregar_producto(self, nombre_producto, stock, precio, descripcion):
+    def agregar_producto(self, nombre_producto, stock, precio, descripcion,codigo_barras):
         nuevo_producto = Producto(
             nombre_producto=nombre_producto,
             stock=stock,
             precio=precio,
-            descripcion=descripcion
+            descripcion=descripcion,
+            codigo_barras=codigo_barras
         )
         nuevo_producto.validar_producto()
         self.repositorio_productos.guardar_producto(nuevo_producto)
