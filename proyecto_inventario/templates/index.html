@@ -49,6 +49,9 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Agregar Producto</button>
         </form>
+        <div class="pt-3">
+            <button class="btn btn-primary w-100" id="actualizar">Actualizar Producto</button>
+        </div>
     </div>
 
     <div class="card p-4 shadow-sm table-responsive">
@@ -194,6 +197,45 @@
         });
     }
 
+    async function prepararEdicion(id) {
+        try{
+            const respuesta = await fetch(`${API_URL}/${id}`,{
+                method: 'GET',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                }
+            });
+            const data = await respuesta.json();
+            if (respuesta.ok){
+                console.log(data);
+
+            const nombre = data['nombre_producto'];
+            const stock = data['stock'];
+            const precio = data['precio'];
+            const descripcion = data['descripcion'];
+
+            const CampoNombre = document.getElementById('nombre');
+            const CampoStock = document.getElementById('stock');
+            const CampoPrecio = document.getElementById('precio');
+            const CampoDescripcion = document.getElementById('descripcion');   
+            
+
+            CampoNombre.value = nombre;
+            CampoStock.value = stock;
+            CampoPrecio.value = precio;
+            CampoDescripcion.value = descripcion;
+            } else {
+                alert(data.Error || "Error!!! el servidor tardo mucho")
+            }
+            
+            }catch(Error){
+                console.log(Error);
+            }
+        }
+        
+    
+
     // --- NUEVA FUNCIÓN: CAMBIAR STOCK (+1 o -1) ---
     async function cambiarStock(id, cantidad) {
         try {
@@ -229,7 +271,7 @@
             descripcion: document.getElementById('descripcion').value,
             codigo_barras: document.getElementById('codigo_barras').value
         };
-
+        
         const respuesta = await fetch(API_URL, {
             method: 'POST',
             headers: { 
@@ -238,6 +280,8 @@
             },
             body: JSON.stringify(nuevoProducto)
         });
+        
+            
 
         if(respuesta.ok){
             document.getElementById('productoForm').reset();
