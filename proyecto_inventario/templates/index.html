@@ -76,7 +76,7 @@
     //se configura el lector sus fps y el tamaño del cuadro
     const config = {
         'fps': 15,
-        'qrbox': {'width':200,'height':150}
+        'qrbox': {'width':400,'height':300}
     }
     //se captura el boton en una variable para darle eventos y que se disparen
     boton = document.getElementById("boton")
@@ -87,7 +87,7 @@
         await Qr.start(
             {facingMode: 'environment'},
             config,
-            async (code) => {const respuesta = await fetch("/productos/buscar",{
+            async (code) => {/*const respuesta = await fetch("/productos/buscar",{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -95,15 +95,22 @@
                 body: JSON.stringify({
                     "code-barras" : code
                 }) 
-            })
+            })*/
+           /*---llenar un campo especifico con informacion---*/
+           //capturamos el campo a llenar en un avariable
+            const CampoBarras = document.getElementById('codigo_barras')
+            //llenamos el campo con la informacion que queremos
+            CampoBarras.value = code
+            // mensaje de exito que se imprime en la consola
+            console.log("Codigo escaneado correctamente",code)
         
             //al final de todo cuando se ejecute el codigo dentro del start usamos el stop metodo para cerrar el lector
             await Qr.stop()
-
+            /*
             if (respuesta.ok){
                 const data = await respuesta.json();
                 console.log(data)
-            }
+            }*/
 
             }    
         );
@@ -174,6 +181,12 @@
                     <td>
                         <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${prod.id_producto})">
                             <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="prepararEdicion(${prod.id_producto})">
+                             Editar
                         </button>
                     </td>
                 </tr>
