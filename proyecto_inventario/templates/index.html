@@ -197,6 +197,8 @@
         });
     }
 
+   
+
     async function prepararEdicion(id) {
         try{
             const respuesta = await fetch(`${API_URL}/${id}`,{
@@ -210,21 +212,29 @@
             if (respuesta.ok){
                 console.log(data);
 
-            const nombre = data['nombre_producto'];
-            const stock = data['stock'];
-            const precio = data['precio'];
-            const descripcion = data['descripcion'];
+                const btn_id = document.getElementById("actualizar");
+                btn_id.dataset.id = id;
 
-            const CampoNombre = document.getElementById('nombre');
-            const CampoStock = document.getElementById('stock');
-            const CampoPrecio = document.getElementById('precio');
-            const CampoDescripcion = document.getElementById('descripcion');   
-            
+                const nombre = data['nombre_producto'];
+                const stock = data['stock'];
+                const precio = data['precio'];
+                const descripcion = data['descripcion'];
+                const codigo_barras = data['codigo_barras'];
 
-            CampoNombre.value = nombre;
-            CampoStock.value = stock;
-            CampoPrecio.value = precio;
-            CampoDescripcion.value = descripcion;
+                const CampoNombre = document.getElementById('nombre');
+                const CampoStock = document.getElementById('stock');
+                const CampoPrecio = document.getElementById('precio');
+                const CampoDescripcion = document.getElementById('descripcion');   
+                const CampoCodigo = document.getElementById('codigo_barras');
+                
+
+                CampoNombre.value = nombre;
+                CampoStock.value = stock;
+                CampoPrecio.value = precio;
+                CampoDescripcion.value = descripcion;
+                CampoCodigo.value = codigo_barras
+
+                
             } else {
                 alert(data.Error || "Error!!! el servidor tardo mucho")
             }
@@ -233,7 +243,41 @@
                 console.log(Error);
             }
         }
+
+    //--- FUNCION PARA ACTUALIZAR DATOS DE UN PRODUCTO ---
+    const boton_actualizar = document.getElementById("actualizar");
+    boton_actualizar.addEventListener('click', async () => {
         
+        const id = event.target.dataset.id;
+
+        const nuevos_datos = {
+            nombre_producto : document.getElementById('nombre').value,
+            stock : document.getElementById('stock').value,
+            precio : document.getElementById('precio').value,
+            descripcion : document.getElementById('descripcion').value,
+            codigo_barras : document.getElementById('codigo_barras').value
+            };
+           
+
+        const respuesta = await fetch(`${API_URL}/${id}`,{
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                'x-access-token': token
+            },
+            body: JSON.stringify(nuevos_datos)
+        });
+
+        if(respuesta.ok){
+            document.getElementById('productoForm').reset();
+            console.log("Producto actualizado correctamente")
+            cargarProductos();
+        } else {
+            alert("Error al actualizar el producto");
+        }
+            
+        });
+      
     
 
     // --- NUEVA FUNCIÓN: CAMBIAR STOCK (+1 o -1) ---
