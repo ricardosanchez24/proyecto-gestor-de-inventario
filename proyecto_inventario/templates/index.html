@@ -155,14 +155,19 @@
         tabla.innerHTML = ''; 
 
         productos.forEach(prod => {
+            // 1. Definimos las condiciones basadas en los datos de TiDB
+            const esStockBajo = prod.stock <= 5;
+
+            // 2. Usamos tus "ternarios" para decidir el diseño
+            const claseFila = esStockBajo ? 'table-danger' :'';
+            const avisoBadge = esStockBajo ? '<span class="badge rounded-pill bg-danger ms-2">¡Reponer!</span>' : '';
             tabla.innerHTML += `
-                <tr>
+                <tr class="${claseFila}">
                     <td>${prod.id_producto}</td>
                     <td><strong>${prod.nombre_producto}</strong></td>
                     <td>${prod.descripcion}</td>
                     <td>$${prod.precio}</td>
                     <td>$${prod.codigo_barras}</td>
-                    
                     
                     
                     <td class="text-center">
@@ -177,6 +182,9 @@
                                 <i class="bi bi-plus-lg"></i>
                             </button>
                         </div>
+
+                    
+
                     </td>
                     
                     
@@ -191,6 +199,10 @@
                         <button class="btn btn-primary btn-sm" onclick="prepararEdicion(${prod.id_producto})">
                              Editar
                         </button>
+                    </td>
+
+                    <td>
+                     ${avisoBadge}
                     </td>
                 </tr>
             `;
