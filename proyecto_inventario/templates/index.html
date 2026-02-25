@@ -167,7 +167,7 @@
                     <td><strong>${prod.nombre_producto}</strong></td>
                     <td>${prod.descripcion}</td>
                     <td>$${prod.precio}</td>
-                    <td>$${prod.codigo_barras}</td>
+                    <td>${prod.codigo_barras}</td>
                     
                     
                     <td class="text-center">
@@ -175,7 +175,7 @@
                             <button class="btn btn-outline-danger btn-sm" onclick="cambiarStock(${prod.id_producto}, -1)">
                                 <i class="bi bi-dash-lg"></i>
                             </button>
-                            <span class="btn btn-light disabled" style="width: 60px; color: black; font-weight: bold;">
+                            <span class="btn btn-light disabled" style="width: 75px; color: black; font-weight: bold;">
                                 ${prod.stock}
                             </span>
                             <button class="btn btn-outline-success btn-sm" onclick="cambiarStock(${prod.id_producto}, 1)">

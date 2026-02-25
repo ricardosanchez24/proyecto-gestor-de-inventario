@@ -1,5 +1,5 @@
 from database_config import Base
-from sqlalchemy import String, INTEGER, Column,DECIMAL
+from sqlalchemy import String, INTEGER, Column,DECIMAL,ForeignKey
 
 class Producto(Base):
     __tablename__ = "productos"
@@ -9,6 +9,7 @@ class Producto(Base):
     precio = Column(DECIMAL(10,2), nullable=False)
     descripcion = Column(String(250))
     codigo_barras = Column(String(100), unique=True, nullable=False)
+    usuario_id = Column(INTEGER, ForeignKey('Usuarios.id_usuario'), nullable=False)
 
     def validar_producto(self):
         if not self.nombre_producto:

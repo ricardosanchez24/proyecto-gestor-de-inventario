@@ -39,6 +39,8 @@ def token_requerido(f):
 
 		try:
 			data = jwt.decode(token, app.config['SECRET_KEY'],algorithms=['HS256'])
+			# NUEVO: Guardamos el ID del usuario en el objeto request para usarlo en las rutas
+			request.usuario_id = data['user_id']
 		except jwt.ExpiredSignatureError:
 			print("DEBUG: El token expiró realmente (por fecha)")
 			return jsonify({'menssage': 'el token a expirado'}), 401
@@ -113,7 +115,8 @@ def listar_productos():
 	repo = ProductoRepository(session)
 	servicio = InventarioService(repo)
 	try:
-		productos = servicio.obtener_todos()
+		usuario_id = request.usuario_id
+		productos = servicio.obtener_todos(usuario_id)
 		
 		lista_final = []
 		for p in productos:
@@ -129,7 +132,7 @@ def listar_productos():
 	finally:
 			session.close()
 
-@app.route('/productos', methods=['POST','GET'])
+@app.route('/productos', methods=['POST'])
 @token_requerido
 def crear_producto():
 	session = SessionLocal()
@@ -137,14 +140,17 @@ def crear_producto():
 	servicio = InventarioService(repo)
 	try:
 		data = request.get_json()
+		
 		nombre_producto = data.get('nombre_producto')
 		stock = int(data.get('stock', 0))
 		precio = float(data.get('precio', 0))
 		descripcion = data.get('descripcion', '')
 		codigo_barras = data.get('codigo_barras')
-		servicio.agregar_producto(nombre_producto, stock, precio, descripcion,codigo_barras)
+		usuario_id = request.usuario_id # <--- Lo obtenemos del decorador
+		servicio.agregar_producto(nombre_producto, stock, precio, descripcion,codigo_barras,usuario_id)
 		return jsonify({'message': 'Producto creado correctamente.'}), 201
 	except Exception as e:
+		print(f"el error es {e}")
 		return jsonify({'error': str(e)}), 400
 	finally:
 		session.close()
@@ -157,7 +163,8 @@ def obtener_producto(id_producto):
 	repo = ProductoRepository(session)
 	servicio = InventarioService(repo)
 	try:
-		producto = servicio.obtener_producto(id_producto)
+		usuario_id = request.usuario_id
+		producto = servicio.obtener_producto(id_producto,usuario_id)
 		if not producto:
 			return jsonify({'error': 'Producto no encontrado.'}), 404
 		return jsonify({
@@ -165,7 +172,8 @@ def obtener_producto(id_producto):
 			'nombre_producto': producto.nombre_producto,
 			'stock': producto.stock,
 			'precio': float(producto.precio),
-			'descripcion': producto.descripcion
+			'descripcion': producto.descripcion,
+			'codigo_barras':producto.codigo_barras
 		})
 	finally:
 		session.close()
@@ -186,9 +194,13 @@ def actualizar_producto(id_producto):
 		precio = float(data.get('precio', 0))
 		descripcion = data.get('descripcion', '')
 		codigo_barras = data.get('codigo_barras')
-		servicio.actualizar_producto(id_producto, nombre, stock, precio, descripcion,codigo_barras)
+
+		usuario_id = request.usuario_id
+
+		servicio.actualizar_producto(id_producto, nombre, stock, precio, descripcion,codigo_barras,usuario_id)
 		return jsonify({'message': 'Producto actualizado correctamente.'})
 	except Exception as e:
+		print(f"el error es: {e}")
 		return jsonify({'error': str(e)}), 400
 	finally:
 		session.close()
@@ -202,7 +214,8 @@ def eliminar_producto(id_producto):
 	servicio = InventarioService(repo)
 
 	try:
-		servicio.eliminar_producto(id_producto)
+		usuario_id = request.usuario_id
+		servicio.eliminar_producto(id_producto,usuario_id)
 		return jsonify({'message': 'Producto eliminado correctamente.'})
 	except Exception as e:
 		return jsonify({'error': str(e)}), 400
@@ -219,8 +232,8 @@ def actualizar_stock(id_producto):
     try:
         data = request.get_json()
         cantidad = int(data.get('cantidad', 0)) # Puede ser 1 o -1
-        
-        servicio.modificar_stock(id_producto, cantidad)
+        usuario_id = request.usuario_id
+        servicio.modificar_stock(id_producto, cantidad,usuario_id)
         return jsonify({'message': 'Stock actualizado'}), 200
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
@@ -238,9 +251,10 @@ def buscar_producto_codigo_barras():
 
 	try:
 		data = request.get_json
+		usuario_id = request.usuario_id
 		codigo = data.get('codigo_barras')
 
-		producto = servicio.obtener_producto_codigo_barras(codigo)
+		producto = servicio.obtener_producto_codigo_barras(codigo,usuario_id)
 
 		if producto:
 			return jsonify({
