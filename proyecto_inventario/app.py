@@ -149,6 +149,7 @@ def crear_producto():
 		usuario_id = request.usuario_id # <--- Lo obtenemos del decorador
 		servicio.agregar_producto(nombre_producto, stock, precio, descripcion,codigo_barras,usuario_id)
 		return jsonify({'message': 'Producto creado correctamente.'}), 201
+	
 	except Exception as e:
 		print(f"el error es {e}")
 		return jsonify({'error': str(e)}), 400
